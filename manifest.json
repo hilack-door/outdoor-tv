@@ -1,0 +1,39 @@
+{
+    "name": "Mountain TV Guide",
+    "short_name": "MTN TV",
+    "description": "登山・アウトドア関連テレビ番組とYouTube動画をまとめて確認",
+    "start_url": "https:\/\/hilack-door.github.io\/outdoor-tv\/",
+    "scope": "https:\/\/hilack-door.github.io\/outdoor-tv\/",
+    "display": "standalone",
+    "background_color": "#f8fafc",
+    "theme_color": "#0a3321",
+    "lang": "ja",
+    "dir": "ltr",
+    "orientation": "portrait-primary",
+    "categories": [
+        "entertainment",
+        "lifestyle"
+    ],
+    "icons": [
+        {
+            "src": "\/favicon.svg",
+            "sizes": "any",
+            "type": "image\/svg+xml",
+            "purpose": "any"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "TV番組表",
+            "short_name": "番組表",
+            "url": "https:\/\/hilack-door.github.io\/outdoor-tv\/programs",
+            "description": "登山・アウトドア番組表"
+        },
+        {
+            "name": "YouTube新着",
+            "short_name": "YouTube",
+            "url": "https:\/\/hilack-door.github.io\/outdoor-tv\/youtube",
+            "description": "登山系YouTube新着動画"
+        }
+    ]
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hilack-door.github.io/outdoor-tv/sitemap.xml
+Sitemap: https://hilack-door.github.io/outdoor-tv/sitemap.txt

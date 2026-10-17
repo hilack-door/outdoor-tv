@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>山の天気予報｜5モデル平均の登山天気 | Mountain TV Guide</title>
+    <meta name="description" content="日本百名山と全国県庁所在地の天気予報。気象庁・ECMWF・GFS・ICON・GEMの5モデルを平均し、予報のばらつき（一致度）とあわせて表示。標高を考慮した山頂の気温・降水量が分かります。">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://hilack-door.github.io/outdoor-tv/weather/">    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mountain TV Guide">
+    <meta property="og:title" content="山の天気予報｜5モデル平均の登山天気 | Mountain TV Guide">
+    <meta property="og:description" content="日本百名山と全国県庁所在地の天気予報。気象庁・ECMWF・GFS・ICON・GEMの5モデルを平均し、予報のばらつき（一致度）とあわせて表示。標高を考慮した山頂の気温・降水量が分かります。">
+    <meta property="og:url" content="https://hilack-door.github.io/outdoor-tv/weather/">    <meta property="og:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="山の天気予報｜5モデル平均の登山天気 | Mountain TV Guide">
+    <meta name="twitter:description" content="日本百名山と全国県庁所在地の天気予報。気象庁・ECMWF・GFS・ICON・GEMの5モデルを平均し、予報のばらつき（一致度）とあわせて表示。標高を考慮した山頂の気温・降水量が分かります。">
+    <meta name="twitter:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+        <script type="application/ld+json">{"@context":"https:\/\/schema.org","@graph":[{"@type":"WebSite","@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/#website","name":"Mountain TV Guide","url":"https:\/\/hilack-door.github.io\/outdoor-tv\/","description":"登山・アウトドア関連テレビ番組とYouTube動画、山の天気をまとめて確認"},{"@type":"WebPage","@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/weather\/#webpage","url":"https:\/\/hilack-door.github.io\/outdoor-tv\/weather\/","name":"山の天気予報｜5モデル平均の登山天気 | Mountain TV Guide","description":"日本百名山と全国県庁所在地の天気予報。気象庁・ECMWF・GFS・ICON・GEMの5モデルを平均し、予報のばらつき（一致度）とあわせて表示。標高を考慮した山頂の気温・降水量が分かります。","isPartOf":{"@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/#website"}}]}</script>
+        <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" href="../favicon.ico" sizes="any">
+    <link rel="manifest" href="https://hilack-door.github.io/outdoor-tv/manifest.json">
+    <meta name="theme-color" content="#0d1527">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MTN TV">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PC70BVCMKE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PC70BVCMKE');
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #17181c;
+            --muted: #69707c;
+            --line: #dfe3ea;
+            --panel: rgba(255, 255, 255, 0.88);
+            --paper: #fffaf4;
+            --night: #161a24;
+            --blue: #2e6f95;
+            --red: #c84f4f;
+            --amber: #d79224;
+            --rain: #3f7fb5;
+            --shadow: 0 18px 52px rgba(23, 24, 28, 0.14);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'BIZ UDPGothic', 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            color: var(--ink);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 8% 4%, rgba(46, 111, 149, 0.16), transparent 22rem),
+                radial-gradient(circle at 84% 0%, rgba(63, 127, 181, 0.18), transparent 26rem),
+                linear-gradient(180deg, #eef3f7 0%, #f7f8fb 52%, #edf4f6 100%);
+        }
+
+        a { color: inherit; }
+
+        .app-shell {
+            width: min(1180px, calc(100% - 2rem));
+            margin: 0 auto;
+        }
+
+        header.hero {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(248, 250, 252, 0.9);
+            border-bottom: 1px solid rgba(23, 24, 28, 0.1);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .topbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.82rem 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.72rem;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 2.45rem;
+            height: 2.45rem;
+            box-shadow: 0 10px 26px rgba(46, 111, 149, 0.22);
+            flex-shrink: 0;
+        }
+
+        .brand-mark img { display: block; width: 100%; height: 100%; }
+
+        .hero-main { min-width: 0; }
+
+        .hero-kicker {
+            display: block;
+            color: var(--muted);
+            font-size: 0.66rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+        }
+
+        .update-time {
+            display: inline-block;
+            margin-left: 0.42rem;
+            padding: 0.08rem 0.4rem;
+            border-radius: 999px;
+            background: rgba(46, 111, 149, 0.12);
+            color: var(--blue);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            vertical-align: 0.05em;
+            white-space: nowrap;
+        }
+
+        .hero-title {
+            font-size: 1.12rem;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+
+        .hero-title .accent { color: var(--blue); }
+
+        .hero-lead {
+            margin-top: 0.2rem;
+            color: var(--muted);
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+
+        .primary-nav { display: flex; gap: 0.4rem; }
+
+        .hero-tv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.34rem;
+            padding: 0.44rem 0.72rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .hero-tv-btn svg { width: 1rem; height: 1rem; }
+        .hero-tv-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            padding-bottom: 0.82rem;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .filter-fields {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        /* 検索欄の開閉ボタンはスマホでのみ使う */
+        .filter-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 2.1rem;
+            min-height: 2.1rem;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            cursor: pointer;
+        }
+
+        .filter-toggle svg { width: 1.02rem; height: 1.02rem; }
+        .filter-toggle[aria-expanded="true"] { color: #fff; background: var(--blue); border-color: var(--blue); }
+
+        .control-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.34rem;
+        }
+
+        .control-label {
+            color: var(--muted);
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.06em;
+        }
+
+        .toolbar button {
+            min-height: 2.2rem;
+            padding: 0.4rem 0.7rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .toolbar button:hover { border-color: var(--blue); }
+
+        .toolbar button.active {
+            color: #fff;
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        .toolbar .favorite-filter {
+            display: inline-grid;
+            place-items: center;
+            width: 2.2rem;
+            padding: 0;
+        }
+
+        .favorite-filter svg { width: 1rem; height: 1rem; }
+
+        .toolbar .favorite-filter[aria-pressed="true"] {
+            color: #805800;
+            background: rgba(215, 146, 36, 0.16);
+            border-color: var(--amber);
+        }
+
+        .favorite-filter[aria-pressed="true"] svg,
+        .favorite-button[aria-pressed="true"] svg { fill: currentColor; }
+
+        .favorite-button {
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 2rem;
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .favorite-button svg { width: 1rem; height: 1rem; }
+
+        .favorite-button[aria-pressed="true"] {
+            color: #805800;
+            background: rgba(215, 146, 36, 0.16);
+            border-color: var(--amber);
+        }
+
+        .favorite-button:hover,
+        .favorite-filter:hover { border-color: var(--amber); }
+
+        .favorite-button:focus-visible,
+        .favorite-filter:focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 2px;
+        }
+
+        .search-box {
+            min-height: 2.2rem;
+            min-width: 11rem;
+            padding: 0.4rem 0.72rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            font-family: inherit;
+            font-size: 0.8rem;
+        }
+
+        .search-box:focus { outline: 2px solid rgba(46, 111, 149, 0.4); outline-offset: 1px; }
+
+        .pref-select {
+            min-height: 2.2rem;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .container { padding: 1.35rem 0 2.6rem; }
+
+        .site-desc {
+            max-width: 56rem;
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.8;
+            margin-bottom: 0.9rem;
+        }
+
+        /* 予報の読み方 */
+        .legend {
+            margin-bottom: 1.2rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--line);
+            border-radius: 0.9rem;
+            background: var(--panel);
+        }
+
+        .legend summary {
+            font-size: 0.82rem;
+            font-weight: 900;
+            cursor: pointer;
+            color: var(--blue);
+        }
+
+        .legend-body {
+            margin-top: 0.7rem;
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.85;
+        }
+
+        .legend-body u { text-decoration-color: var(--red); text-underline-offset: 0.18em; }
+
+        .legend-note { color: var(--muted); font-size: 0.74rem; }
+
+        .rank-inline {
+            display: inline-grid;
+            place-items: center;
+            width: 1.05rem;
+            height: 1.05rem;
+            border-radius: 0.25rem;
+            color: #fff;
+            font-size: 0.66rem;
+            font-weight: 900;
+            vertical-align: middle;
+        }
+
+        .legend-models {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.38rem;
+            margin-top: 0.55rem;
+        }
+
+        .legend-models span {
+            padding: 0.22rem 0.55rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .area-heading {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 1.5rem 0 0.7rem;
+            padding: 0.55rem 0;
+            background: rgba(247, 249, 251, 0.93);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .area-heading:first-child { margin-top: 0; }
+        .area-heading[hidden] { display: none; }
+
+        .area-name {
+            position: relative;
+            padding-left: 0.62rem;
+            font-size: 0.95rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+        }
+
+        .area-name::before {
+            content: '';
+            position: absolute;
+            top: 0.16em;
+            bottom: 0.16em;
+            left: 0;
+            width: 0.24rem;
+            border-radius: 999px;
+            background: var(--blue);
+        }
+
+        .area-count { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
+
+        /* 地点カード */
+        .point-card {
+            margin-bottom: 0.85rem;
+            border: 1px solid var(--line);
+            border-radius: 0.95rem;
+            background: var(--panel);
+            box-shadow: 0 8px 24px rgba(23, 24, 28, 0.05);
+            overflow: hidden;
+        }
+
+        .point-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.5rem;
+            padding: 0.72rem 0.95rem;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.55);
+        }
+
+        .point-name { font-size: 0.98rem; font-weight: 900; }
+
+        .point-elev {
+            padding: 0.12rem 0.45rem;
+            border-radius: 999px;
+            background: rgba(46, 111, 149, 0.12);
+            color: var(--blue);
+            font-size: 0.72rem;
+            font-weight: 900;
+        }
+
+        .point-pref { color: var(--muted); font-size: 0.74rem; font-weight: 700; }
+
+        .point-note { margin-left: auto; color: var(--muted); font-size: 0.7rem; }
+
+        .day-strip {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(7.2rem, 1fr);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .day-cell {
+            padding: 0.62rem 0.5rem 0.7rem;
+            border-right: 1px solid var(--line);
+            text-align: center;
+        }
+
+        .day-cell:last-child { border-right: none; }
+        .day-cell.is-today { background: rgba(215, 146, 36, 0.09); }
+        .day-cell.is-sat .day-date { color: var(--blue); }
+        .day-cell.is-sun .day-date { color: var(--red); }
+
+        .day-date { font-size: 0.72rem; font-weight: 900; }
+        .day-icon { font-size: 1.32rem; line-height: 1.5; }
+
+        .day-temp {
+            font-size: 0.86rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .day-icon .slot-sep {
+            margin: 0 0.12rem;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            vertical-align: 0.14em;
+        }
+
+        .slot-row {
+            font-size: 0.82rem;
+            font-weight: 900;
+            white-space: nowrap;
+            line-height: 1.5;
+        }
+
+        .slot-row .sep { color: var(--muted); font-weight: 700; margin: 0 0.16rem; }
+        .slot-row .unit { color: var(--muted); font-size: 0.64rem; font-weight: 700; margin-left: 0.06rem; }
+        .slot-row .tmax { color: var(--red); }
+        .slot-row .tmin { color: var(--blue); }
+        .slot-row.is-precip { color: var(--rain); font-size: 0.78rem; }
+        .slot-row.is-precip.is-dry { color: var(--muted); font-weight: 700; }
+
+        .day-temp .unit { color: var(--muted); font-size: 0.66rem; font-weight: 700; margin-left: 0.06rem; }
+
+        .day-confidence {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.22rem;
+            margin-top: 0.12rem;
+        }
+
+        .day-confidence .rank {
+            display: inline-grid;
+            place-items: center;
+            width: 1.12rem;
+            height: 1.12rem;
+            border-radius: 0.28rem;
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: help;
+        }
+
+        .rank-a { background: #2f8f5b; }
+        .rank-b { background: #3f7fb5; }
+        .rank-c { background: #d79224; }
+        .rank-d { background: #b4574f; }
+        .rank- { background: #9aa1ad; }
+
+        .day-confidence .rank-text {
+            color: var(--muted);
+            font-size: 0.58rem;
+            font-weight: 700;
+        }
+
+        .day-temp .tmax { color: var(--red); }
+        .day-temp .tmin { color: var(--blue); }
+        .day-temp .sep { color: var(--muted); font-weight: 700; margin: 0 0.1rem; }
+
+        .day-range {
+            color: var(--muted);
+            font-size: 0.64rem;
+            white-space: nowrap;
+        }
+
+        .day-precip {
+            margin-top: 0.22rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--rain);
+            white-space: nowrap;
+        }
+
+        .day-precip.is-dry { color: var(--muted); font-weight: 700; }
+
+        /* 予報の一致度 */
+        .agreement {
+            margin-top: 0.3rem;
+            color: rgba(23, 24, 28, 0.22);
+            font-size: 0.58rem;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .agreement b { color: var(--rain); font-weight: 400; }
+
+        .agreement-label {
+            display: block;
+            margin-top: 0.16rem;
+            color: var(--muted);
+            font-size: 0.6rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .agreement-label b { color: var(--rain); font-size: 0.68rem; }
+
+        /* モデル別内訳 */
+        .breakdown-toggle {
+            display: block;
+            width: 100%;
+            padding: 0.42rem;
+            border: none;
+            border-top: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--blue);
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .breakdown-toggle:hover { background: rgba(46, 111, 149, 0.07); }
+
+        .breakdown { display: none; padding: 0.3rem 0.5rem 0.7rem; overflow-x: auto; }
+        .breakdown.open { display: block; }
+
+        .breakdown table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+
+        .breakdown th,
+        .breakdown td {
+            padding: 0.3rem 0.42rem;
+            border-bottom: 1px solid var(--line);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .breakdown th { color: var(--muted); font-weight: 900; }
+        .breakdown th.model-col,
+        .breakdown td.model-col { text-align: left; font-weight: 800; }
+        .breakdown tr.is-jma { background: rgba(46, 111, 149, 0.07); }
+
+        .bd-note {
+            margin: 0.1rem 0 0.5rem;
+            color: var(--muted);
+            font-size: 0.72rem;
+        }
+
+        .bd-note b { color: var(--ink); }
+
+        .bd-temp .tmax { color: var(--red); font-weight: 700; }
+        .bd-temp .tmin { color: var(--blue); }
+        .bd-precip { color: var(--rain); }
+
+        .empty-state {
+            padding: 2.2rem 1rem;
+            border: 1px dashed var(--line);
+            border-radius: 0.9rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .no-results[hidden] { display: none; }
+
+        .attribution {
+            margin-top: 1.6rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 0.72rem;
+            line-height: 1.9;
+        }
+
+        .attribution a { color: var(--blue); }
+
+        /* 山マップから地点を指定して開いたときの目印 */
+        .point-card.is-focused {
+            outline: 3px solid rgba(46, 111, 149, 0.55);
+            outline-offset: 2px;
+            transition: outline-color 0.4s;
+        }
+
+        .mobile-bottom-nav { display: none; }
+
+        @media (max-width: 680px) {
+            .app-shell { width: min(100% - 1.25rem, 1180px); }
+            header.hero .app-shell {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: center;
+                column-gap: 0.65rem;
+            }
+            .topbar { display: contents; }
+            .controls { display: contents; }
+            .brand {
+                grid-column: 1 / -1;
+                padding: 0.82rem 0 0.55rem;
+                align-items: flex-start;
+            }
+            .primary-nav {
+                grid-column: 1;
+                grid-row: 2;
+                justify-self: start;
+                padding-bottom: 0.85rem;
+            }
+            .toolbar {
+                grid-column: 2;
+                grid-row: 2;
+                flex-wrap: nowrap;
+                justify-content: flex-end;
+                padding-bottom: 0.85rem;
+            }
+            .filter-toggle { display: inline-flex; }
+            /* 検索と都道府県は開いたときだけ3行目にフル幅で出す */
+            .filter-fields {
+                grid-column: 1 / -1;
+                grid-row: 3;
+                display: none;
+                padding-bottom: 0.8rem;
+            }
+            .filter-fields.open { display: flex; }
+            .search-box { flex: 1; min-width: 0; }
+            .pref-select { flex-shrink: 0; max-width: 8rem; }
+
+            /*
+             | iOS Safari はフォントが16px未満の入力欄にフォーカスすると画面を拡大し、
+             | その結果ページが横スクロールしてしまう。16px 以上にすると拡大されない。
+             */
+            .search-box,
+            .pref-select {
+                font-size: 16px;
+            }
+            .control-label { display: none; }
+            .search-box { min-width: 6.5rem; }
+            .toolbar button {
+                min-height: 2.1rem;
+                padding: 0.38rem 0.52rem;
+                font-size: 0.76rem;
+            }
+            .brand-mark { width: 2.2rem; height: 2.2rem; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-lead,
+            .site-desc { display: none; }
+            .container { padding-bottom: calc(5.4rem + env(safe-area-inset-bottom)); }
+
+            /* スマホでは山マップは下部ナビから開く */
+            .primary-nav .nav-map { display: none; }
+
+            .mobile-bottom-nav {
+                position: fixed;
+                z-index: 200;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                min-height: calc(4.35rem + env(safe-area-inset-bottom));
+                padding-bottom: env(safe-area-inset-bottom);
+                background: rgba(255, 250, 244, 0.96);
+                border-top: 1px solid rgba(23, 24, 28, 0.14);
+                box-shadow: 0 -8px 28px rgba(23, 24, 28, 0.12);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+
+            .mobile-bottom-nav a {
+                display: grid;
+                place-items: center;
+                align-content: center;
+                gap: 0.22rem;
+                min-height: 4.35rem;
+                color: var(--muted);
+                font-size: 0.7rem;
+                font-weight: 900;
+                text-decoration: none;
+            }
+
+            .mobile-bottom-nav svg { width: 1.28rem; height: 1.28rem; }
+            .mobile-bottom-nav a[aria-current="page"] { color: var(--blue); }
+            .mobile-bottom-nav a[aria-current="page"] svg { fill: rgba(46, 111, 149, 0.18); }
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="app-shell">
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <img src="../favicon.svg" alt="">
+                </span>
+                <div class="hero-main">
+                    <span class="hero-kicker">
+                        Mountain TV Guide
+                                            </span>
+                    <h1 class="hero-title"><span class="accent">山の天気</span>／5機関の平均予報</h1>
+                    <p class="hero-lead">気象庁・ECMWF・GFSなど世界5機関の予報モデルを平均。予報の一致度もあわせて確認できます。</p>
+                </div>
+            </div>
+            <nav class="primary-nav" aria-label="主要ナビゲーション">
+                <a href="../index.html" class="hero-tv-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                    テレビ番組
+                </a>
+                <a href="../map/index.html" class="hero-tv-btn nav-map">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>
+                    山マップ
+                </a>
+            </nav>
+        </div>
+        <div class="controls">
+            <div class="toolbar" aria-label="地点の絞り込み">
+                <div class="control-group" aria-label="地点の種別">
+                    <span class="control-label">種別</span>
+                    <button id="btn-mountain" type="button" onclick="filterType('mountain')" class="active">百名山</button>
+                    <button id="btn-city" type="button" onclick="filterType('city')">都市</button>
+                </div>
+                <button type="button" id="favorites-filter" class="favorite-filter" onclick="toggleFavoritesFilter()" aria-pressed="false" aria-label="現在の種別のお気に入りのみ表示" title="現在の種別のお気に入りのみ表示">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>
+                </button>
+                <button type="button" id="filter-toggle" class="filter-toggle" onclick="toggleFilters()" aria-expanded="false" aria-controls="filter-fields" aria-label="地点を検索・絞り込み">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                </button>
+            </div>
+            <div class="filter-fields" id="filter-fields">
+                <input type="search" id="point-search" class="search-box" placeholder="山名・地名で検索" aria-label="地点を検索" oninput="applyFilter()" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <select id="area-filter" class="pref-select" aria-label="山域で絞り込み" onchange="applyFilter()">
+                    <option value="">全ての山域</option>
+                                            <option value="m-hokkaido">北海道</option>
+                                            <option value="m-tohoku">東北</option>
+                                            <option value="m-kitakanto">北関東・尾瀬・日光</option>
+                                            <option value="m-joshinetsu">上信越</option>
+                                            <option value="m-chichibu">秩父・多摩・南関東</option>
+                                            <option value="m-kita_alps">北アルプス周辺</option>
+                                            <option value="m-yatsugatake">八ヶ岳・霧ヶ峰・美ヶ原</option>
+                                            <option value="m-chuo_alps">中央アルプス周辺</option>
+                                            <option value="m-minami_alps">南アルプス周辺</option>
+                                            <option value="m-hokuriku_tokai">北陸・東海</option>
+                                            <option value="m-kinki">近畿</option>
+                                            <option value="m-chugoku_shikoku">中国・四国</option>
+                                            <option value="m-kyushu">九州</option>
+                                    </select>
+                <select id="pref-filter" class="pref-select" aria-label="都道府県で絞り込み" onchange="applyFilter()" hidden>
+                    <option value="">全国</option>
+                                    </select>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="app-shell container">
+
+    <p class="site-desc">
+        日本百名山100座と全国県庁所在地47地点の7日間予報。気象庁・ECMWF・GFSなど世界5機関の数値予報モデルを平均し、モデル間で予報がどれだけ一致しているかも表示しています。山岳地点は山頂の標高を考慮した予報です。
+    </p>
+
+    <details class="legend">
+        <summary>予報の読み方</summary>
+        <div class="legend-body">
+            <strong>数字は「午前 / 午後」</strong>（午前6〜12時・午後12〜18時）。上段が気温、下段が降水量です。<br>
+            <strong>信頼度</strong> … 予報のそろい具合。<b class="rank-inline rank-a">A</b> ほぼ一致 → <b class="rank-inline rank-d">D</b> 大きく割れている<br>
+            <strong>●の数</strong> … 何サイトが雨と予報したか（<u>雨量の強さではありません</u>）
+            <div class="legend-models">
+                                    <span title="気象庁（日本）">気象庁</span>
+                                    <span title="欧州中期予報センター">ECMWF</span>
+                                    <span title="米国海洋大気庁">GFS</span>
+                                    <span title="ドイツ気象局">ICON</span>
+                                    <span title="カナダ気象局">GEM</span>
+                            </div>
+        </div>
+    </details>
+
+            <div class="empty-state">
+            <p>表示できる予報データがありません。</p>
+        </div>
+    
+    <div class="attribution">
+        <p>
+            予報データ: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Weather data by Open-Meteo.com</a>
+            （<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>）。
+            Open-Meteo は各国気象機関が公開するオープンデータを集約して配信しています。
+        </p>
+        <p>
+            山岳の山名・標高・座標: <a href="https://www.gsi.go.jp/kihonjohochousa/kihonjohochousa41139.html" target="_blank" rel="noopener">国土地理院「日本の山岳標高一覧（1003山）」</a>／
+            都市の座標: <a href="https://www.jma.go.jp/bosai/amedas/const/amedastable.json" target="_blank" rel="noopener">気象庁 アメダス地点情報</a>
+        </p>
+        <p>
+            本ページは各国気象機関が公開している数値予報モデルの計算結果を集計して表示しているものです。
+                    </p>
+    </div>
+</main>
+
+<nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
+    <a href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>
+        <span>番組表</span>
+    </a>
+    <a href="../youtube/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg>
+        <span>YouTube</span>
+    </a>
+    <a href="../weather/index.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 6.5 19Z"/></svg>
+        <span>天気</span>
+    </a>
+    <a href="../map/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>
+        <span>山マップ</span>
+    </a>
+</nav>
+
+<script>
+const MODEL_LABELS = ["気象庁","ECMWF","GFS","ICON","GEM"];
+const MODEL_KEYS = ["jma_seamless","ecmwf_ifs025","gfs_seamless","icon_seamless","gem_seamless"];
+const DATE_LABELS = [];
+const BREAKDOWN = [];
+
+let currentType = "mountain";
+const FAVORITES_STORAGE_KEY = 'mountain-tv-guide:weather-favorites:v1';
+let favorites = new Set();
+let favoritesOnly = false;
+
+function loadFavorites() {
+    try {
+        const stored = JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY) || '[]');
+        if (Array.isArray(stored)) favorites = new Set(stored.filter(key => typeof key === 'string'));
+    } catch (error) {
+        favorites = new Set();
+    }
+}
+
+function saveFavorites() {
+    try {
+        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(Array.from(favorites)));
+    } catch (error) {
+        // Storage may be unavailable in private or restricted browsing contexts.
+    }
+}
+
+function updateFavoriteButtons() {
+    document.querySelectorAll('#point-list .point-card').forEach(card => {
+        const button = card.querySelector('.favorite-button');
+        const isFavorite = favorites.has(card.dataset.pointKey);
+        const label = isFavorite ? 'をお気に入りから削除' : 'をお気に入りに追加';
+        button.setAttribute('aria-pressed', isFavorite ? 'true' : 'false');
+        button.setAttribute('aria-label', (card.dataset.name || '地点') + label);
+        button.title = (card.dataset.name || '地点') + label;
+    });
+
+    const filterButton = document.getElementById('favorites-filter');
+    const typeLabel = currentType === 'mountain' ? '百名山' : '都市';
+    const count = Array.from(document.querySelectorAll('#point-list .point-card[data-type="' + currentType + '"]'))
+        .filter(card => favorites.has(card.dataset.pointKey)).length;
+    const filterLabel = typeLabel + 'のお気に入りのみ表示（' + count + '件）';
+    filterButton.setAttribute('aria-pressed', favoritesOnly ? 'true' : 'false');
+    filterButton.setAttribute('aria-label', filterLabel);
+    filterButton.title = filterLabel;
+}
+
+function toggleFavorite(button) {
+    const card = button.closest('.point-card');
+    if (!card) return;
+
+    const key = card.dataset.pointKey;
+    if (favorites.has(key)) favorites.delete(key);
+    else favorites.add(key);
+
+    saveFavorites();
+    updateFavoriteButtons();
+    applyFilter();
+}
+
+function toggleFavoritesFilter() {
+    favoritesOnly = !favoritesOnly;
+    updateFavoriteButtons();
+    applyFilter();
+}
+
+function filterType(type) {
+    currentType = type;
+    document.getElementById('btn-mountain').classList.toggle('active', type === 'mountain');
+    document.getElementById('btn-city').classList.toggle('active', type === 'city');
+
+    // 山は山域、都市は都道府県で絞り込む
+    var areaFilter = document.getElementById('area-filter');
+    var prefFilter = document.getElementById('pref-filter');
+    areaFilter.hidden = type !== 'mountain';
+    prefFilter.hidden = type === 'mountain';
+    areaFilter.value = '';
+    prefFilter.value = '';
+
+    applyFilter();
+}
+
+function applyFilter() {
+    const keyword = (document.getElementById('point-search').value || '').trim().toLowerCase();
+    const pref = document.getElementById('pref-filter').value;
+    const area = document.getElementById('area-filter').value;
+    const cards = document.querySelectorAll('#point-list .point-card');
+    let shown = 0;
+
+    cards.forEach(card => {
+        const matchType = card.dataset.type === currentType;
+        const matchPref = !pref || (card.dataset.pref || '').includes(pref);
+        const matchArea = !area || card.dataset.area === area;
+        const haystack = ((card.dataset.name || '') + ' ' + (card.dataset.kana || '')).toLowerCase();
+        const matchKeyword = !keyword || haystack.includes(keyword);
+        const matchFavorite = !favoritesOnly || favorites.has(card.dataset.pointKey);
+        const visible = matchType && matchPref && matchArea && matchKeyword && matchFavorite;
+
+        card.hidden = !visible;
+        if (visible) shown++;
+    });
+
+    updateAreaHeadings();
+
+    const noResults = document.getElementById('no-results');
+    if (noResults) {
+        noResults.hidden = shown > 0;
+        const message = document.getElementById('no-results-message');
+        if (favoritesOnly && !Array.from(document.querySelectorAll('#point-list .point-card[data-type="' + currentType + '"]'))
+            .some(card => favorites.has(card.dataset.pointKey))) {
+            message.textContent = 'この種別のお気に入りはありません。地点カードの星から追加できます。';
+        } else {
+            message.textContent = '条件に合う地点がありません。';
+        }
+    }
+}
+
+/** 地方見出しは、その地方に表示中の地点が無ければ隠す */
+function updateAreaHeadings() {
+    document.querySelectorAll('.area-heading').forEach(heading => {
+        const area = heading.dataset.area;
+        const visible = document.querySelectorAll('.point-card[data-area="' + area + '"]:not([hidden])').length;
+
+        heading.hidden = visible === 0;
+
+        const counter = heading.querySelector('[data-area-count]');
+        if (counter) counter.textContent = visible > 0 ? visible + '地点' : '';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    loadFavorites();
+    updateFavoriteButtons();
+    applyFilter();
+    focusPointFromHash();
+});
+
+/** 山マップなどから #m072 のように地点キー付きで開かれたら、その地点までスクロールする */
+function focusPointFromHash() {
+    const key = decodeURIComponent(location.hash.slice(1));
+    if (!key) return;
+    const card = document.querySelector('.point-card[data-point-key="' + CSS.escape(key) + '"]');
+    if (!card) return;
+
+    if (card.dataset.type !== currentType) filterType(card.dataset.type);
+
+    const header = document.querySelector('header.hero');
+    const top = card.getBoundingClientRect().top + window.scrollY - (header ? header.offsetHeight : 0) - 12;
+    window.scrollTo({ top: top, behavior: 'instant' });
+
+    card.classList.add('is-focused');
+    setTimeout(() => card.classList.remove('is-focused'), 2500);
+}
+
+function renderBreakdown(panel) {
+    const rows = BREAKDOWN[panel.dataset.point];
+    if (!rows) { panel.innerHTML = '<p>内訳データがありません。</p>'; return; }
+
+    let head = '<tr><th class="model-col">サイト（気象機関）</th>';
+    DATE_LABELS.forEach(d => { head += '<th>' + d + '</th>'; });
+    head += '</tr>';
+
+    let body = '';
+    rows.forEach((series, i) => {
+        if (series.every(v => v === null)) return;
+        body += '<tr' + (MODEL_KEYS[i] === 'jma_seamless' ? ' class="is-jma"' : '') + '>';
+        body += '<td class="model-col">' + MODEL_LABELS[i] + '</td>';
+        series.forEach(v => {
+            if (v === null) {
+                body += '<td>—</td>';
+            } else {
+                const lo = v[0] === null ? '—' : v[0].toFixed(1);
+                const hi = v[1] === null ? '—' : v[1].toFixed(1);
+                const p  = v[2] === null ? '—' : v[2].toFixed(1);
+                body += '<td><span class="bd-temp"><span class="tmin">' + lo + '</span> / <span class="tmax">' + hi + '</span></span>'
+                      + '<br><span class="bd-precip">' + p + 'mm</span></td>';
+            }
+        });
+        body += '</tr>';
+    });
+
+    panel.innerHTML = '<p class="bd-note">各セルの上段は<b>最低気温 / 最高気温</b>（℃）、下段は<b>降水量</b>（mm）です。</p>'
+                    + '<table><thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
+}
+
+// 入力と同時に絞り込むため送信は不要。Enter はキーボードを閉じるためだけに使う
+(function () {
+    var search = document.getElementById('point-search');
+    if (!search) return;
+
+    search.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            search.blur();
+        }
+    });
+})();
+
+function toggleFilters() {
+    const fields = document.getElementById('filter-fields');
+    const button = document.getElementById('filter-toggle');
+    const open = fields.classList.toggle('open');
+
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) document.getElementById('point-search').focus();
+}
+
+function toggleBreakdown(button) {
+    const panel = button.nextElementSibling;
+
+    if (!panel.dataset.rendered) {
+        renderBreakdown(panel);
+        panel.dataset.rendered = '1';
+    }
+
+    const open = panel.classList.toggle('open');
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    button.textContent = open ? 'モデル別の内訳を閉じる' : 'モデル別の内訳を見る';
+}
+</script>
+<style>
+    .pwa-refresh {
+        position: fixed;
+        z-index: 210;
+        right: 0.9rem;
+        bottom: calc(5.2rem + env(safe-area-inset-bottom));
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 2.9rem;
+        height: 2.9rem;
+        padding: 0;
+        border: 1px solid rgba(23, 24, 28, 0.12);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.96);
+        color: #2e6f95;
+        box-shadow: 0 6px 20px rgba(23, 24, 28, 0.18);
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+
+    .pwa-refresh.is-visible { display: inline-flex; }
+    .pwa-refresh svg { width: 1.32rem; height: 1.32rem; }
+    .pwa-refresh:active { transform: scale(0.94); }
+
+    .pwa-refresh.is-loading svg { animation: pwa-spin 0.8s linear infinite; }
+
+    @keyframes pwa-spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<button type="button" class="pwa-refresh" id="pwa-refresh" aria-label="最新の情報に更新">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+        <path d="M21 3v6h-6"/>
+    </svg>
+</button>
+
+<script>
+(function () {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('https://hilack-door.github.io/outdoor-tv/sw.js').then(function (registration) {
+                // 起動のたびに新しい Service Worker が無いか確認する
+                registration.update();
+
+                // 新しい版が待機状態になったら、すぐ有効化させる
+                registration.addEventListener('updatefound', function () {
+                    var installing = registration.installing;
+                    if (!installing) return;
+
+                    installing.addEventListener('statechange', function () {
+                        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                            installing.postMessage('skip-waiting');
+                        }
+                    });
+                });
+            }).catch(function () {});
+        });
+    }
+
+    // ホーム画面から起動したときだけ、更新用の仕組みを有効にする
+    var isStandalone = window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+
+    if (!isStandalone) {
+        return;
+    }
+
+    var button = document.getElementById('pwa-refresh');
+    if (button) {
+        button.classList.add('is-visible');
+        button.addEventListener('click', function () {
+            button.classList.add('is-loading');
+            location.reload();
+        });
+    }
+
+    // 一定時間が経ってから復帰したときは、自動で読み込み直す
+    var STALE_MS = 20 * 60 * 1000;
+    var loadedAt = Date.now();
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState !== 'visible') {
+            return;
+        }
+        if (Date.now() - loadedAt < STALE_MS) {
+            return;
+        }
+        location.reload();
+    });
+})();
+</script>
+</body>
+</html>

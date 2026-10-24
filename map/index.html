@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>山マップ｜日本の山を地図で探す | Mountain TV Guide</title>
+    <meta name="description" content="日本全国の山と山小屋を地図で表示。国土地理院の地形図に載っている山名をもとに、百名山から低山まで山名・標高を地図上で確認できます。">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://hilack-door.github.io/outdoor-tv/map/">    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mountain TV Guide">
+    <meta property="og:title" content="山マップ｜日本の山を地図で探す | Mountain TV Guide">
+    <meta property="og:description" content="日本全国の山と山小屋を地図で表示。国土地理院の地形図に載っている山名をもとに、百名山から低山まで山名・標高を地図上で確認できます。">
+    <meta property="og:url" content="https://hilack-door.github.io/outdoor-tv/map/">    <meta property="og:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="山マップ｜日本の山を地図で探す | Mountain TV Guide">
+    <meta name="twitter:description" content="日本全国の山と山小屋を地図で表示。国土地理院の地形図に載っている山名をもとに、百名山から低山まで山名・標高を地図上で確認できます。">
+    <meta name="twitter:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+        <script type="application/ld+json">{"@context":"https:\/\/schema.org","@graph":[{"@type":"WebSite","@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/#website","name":"Mountain TV Guide","url":"https:\/\/hilack-door.github.io\/outdoor-tv\/","description":"登山・アウトドア関連テレビ番組とYouTube動画、山の天気をまとめて確認"},{"@type":"WebPage","@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/map\/#webpage","url":"https:\/\/hilack-door.github.io\/outdoor-tv\/map\/","name":"山マップ｜日本の山を地図で探す | Mountain TV Guide","description":"日本全国の山と山小屋を地図で表示。国土地理院の地形図に載っている山名をもとに、百名山から低山まで山名・標高を地図上で確認できます。","isPartOf":{"@id":"https:\/\/hilack-door.github.io\/outdoor-tv\/#website"}}]}</script>
+        <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" href="../favicon.ico" sizes="any">
+    <link rel="manifest" href="https://hilack-door.github.io/outdoor-tv/manifest.json">
+    <meta name="theme-color" content="#0d1527">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MTN TV">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PC70BVCMKE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PC70BVCMKE');
+    </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #17181c;
+            --muted: #69707c;
+            --line: #dfe3ea;
+            --green: #3f7a4f;
+            --gold: #c7901c;
+            --red: #c84f4f;
+            --hut: #8a5a2b;
+            --shadow: 0 18px 52px rgba(23, 24, 28, 0.14);
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: 'BIZ UDPGothic', 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            color: var(--ink);
+            background: #eef3ef;
+        }
+
+        a { color: inherit; }
+
+        .app-shell {
+            width: min(1180px, calc(100% - 2rem));
+            margin: 0 auto;
+        }
+
+        header.hero {
+            position: relative;
+            z-index: 1000;
+            flex-shrink: 0;
+            background: rgba(248, 250, 248, 0.94);
+            border-bottom: 1px solid rgba(23, 24, 28, 0.1);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .topbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.82rem 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.72rem;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 2.45rem;
+            height: 2.45rem;
+            box-shadow: 0 10px 26px rgba(63, 122, 79, 0.22);
+            flex-shrink: 0;
+        }
+
+        .brand-mark img { display: block; width: 100%; height: 100%; }
+
+        .hero-main { min-width: 0; }
+
+        .hero-kicker {
+            display: block;
+            color: var(--muted);
+            font-size: 0.66rem;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+        }
+
+        .count-badge {
+            display: inline-block;
+            margin-left: 0.42rem;
+            padding: 0.08rem 0.4rem;
+            border-radius: 999px;
+            background: rgba(63, 122, 79, 0.12);
+            color: var(--green);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            vertical-align: 0.05em;
+            white-space: nowrap;
+        }
+
+        .count-badge:empty { display: none; }
+
+        .hero-title {
+            font-size: 1.12rem;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+
+        .hero-title .accent { color: var(--green); }
+
+        .hero-lead {
+            margin-top: 0.2rem;
+            color: var(--muted);
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+
+        .primary-nav { display: flex; gap: 0.4rem; }
+
+        .hero-tv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.34rem;
+            padding: 0.44rem 0.72rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .hero-tv-btn svg { width: 1rem; height: 1rem; }
+        .hero-tv-btn:hover { border-color: var(--green); color: var(--green); }
+
+        .controls {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding-bottom: 0.82rem;
+        }
+
+        .search-box {
+            width: min(22rem, 100%);
+            min-height: 2.1rem;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: #fff;
+            color: var(--ink);
+            font: inherit;
+            font-size: 0.82rem;
+        }
+
+        .search-box:focus { outline: 2px solid rgba(63, 122, 79, 0.35); border-color: var(--green); }
+
+        .legend-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .legend-inline span { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
+        .dot { display: inline-block; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25); }
+        .dot-hyaku { width: 0.8rem; height: 0.8rem; background: var(--gold); }
+        .dot-gsi { width: 0.68rem; height: 0.68rem; background: var(--red); }
+        .dot-other { width: 0.56rem; height: 0.56rem; background: var(--green); }
+        .dot-hut { width: 0.62rem; height: 0.62rem; border-radius: 2px; background: var(--hut); }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% - 0.5rem);
+            left: 0;
+            z-index: 1100;
+            width: min(22rem, 100%);
+            max-height: 18rem;
+            overflow-y: auto;
+            list-style: none;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 0.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-results[hidden] { display: none; }
+
+        .search-results button {
+            display: flex;
+            width: 100%;
+            align-items: baseline;
+            gap: 0.5rem;
+            padding: 0.55rem 0.8rem;
+            border: 0;
+            border-bottom: 1px solid #f0f2f5;
+            background: none;
+            color: var(--ink);
+            font: inherit;
+            font-size: 0.84rem;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .search-results button:hover,
+        .search-results button:focus { background: #f2f7f3; outline: none; }
+        .search-results .r-name { font-weight: 800; }
+        .search-results .r-meta { color: var(--muted); font-size: 0.72rem; }
+        .search-results .r-empty { padding: 0.6rem 0.8rem; color: var(--muted); font-size: 0.8rem; }
+
+        #map {
+            flex: 1;
+            min-height: 0;
+            background: #dfe8e2;
+        }
+
+        .map-status {
+            position: absolute;
+            z-index: 900;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 0.7rem 1rem;
+            border-radius: 0.8rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .map-status[hidden] { display: none; }
+
+        /* ポップアップ */
+        .peak-popup { min-width: 12rem; font-family: inherit; }
+        .peak-popup .p-name { font-size: 1rem; font-weight: 900; line-height: 1.35; }
+        .peak-popup .p-kana { color: var(--muted); font-size: 0.74rem; }
+        .peak-popup .p-ele { margin-top: 0.3rem; font-size: 1.05rem; font-weight: 900; color: var(--green); }
+        .peak-popup .p-ele.unknown { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
+        .peak-popup .p-tags { display: flex; gap: 0.3rem; margin-top: 0.3rem; flex-wrap: wrap; }
+        .peak-popup .p-tag { padding: 0.06rem 0.42rem; border-radius: 999px; font-size: 0.66rem; font-weight: 800; }
+        .peak-popup .p-tag.hyaku { background: rgba(199, 144, 28, 0.16); color: #8a6210; }
+        .peak-popup .p-tag.gsi { background: rgba(200, 79, 79, 0.12); color: var(--red); }
+        .peak-popup .p-tag.hut { background: rgba(138, 90, 43, 0.14); color: var(--hut); }
+
+        .hut-icon {
+            border: 1.5px solid #fff;
+            border-radius: 2px;
+            background: var(--hut);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+        .peak-popup .p-links { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; margin-top: 0.55rem; font-size: 0.76rem; font-weight: 700; }
+        .peak-popup .p-links a { color: var(--green); }
+        .peak-popup .p-src { margin-top: 0.45rem; color: var(--muted); font-size: 0.66rem; }
+
+        .peak-label {
+            padding: 0 0.25rem;
+            border: 0;
+            border-radius: 0.3rem;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: none;
+            color: var(--ink);
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .peak-label::before { display: none; }
+
+        /* 現在地ボタン（右下の丸ボタン） */
+        .locate-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: 0;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(23, 24, 28, 0.28);
+            color: #2e6f95;
+            cursor: pointer;
+        }
+
+        .locate-btn:hover { background: #f3f6f8; }
+        .locate-btn svg { width: 24px; height: 24px; }
+
+        .mobile-bottom-nav { display: none; }
+
+        @media (max-width: 680px) {
+            .app-shell { width: min(100% - 1.25rem, 1180px); }
+            header.hero .app-shell {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: center;
+                column-gap: 0.65rem;
+            }
+            .topbar { display: contents; }
+            .brand {
+                grid-column: 1 / -1;
+                padding: 0.82rem 0 0.55rem;
+                align-items: flex-start;
+            }
+            .primary-nav {
+                grid-column: 1;
+                grid-row: 2;
+                justify-self: start;
+                padding-bottom: 0.85rem;
+            }
+            .controls {
+                grid-column: 2;
+                grid-row: 2;
+                justify-content: flex-end;
+                padding-bottom: 0.85rem;
+            }
+            .legend-inline { display: none; }
+            /* iOS Safari は16px未満の入力欄にフォーカスすると画面を拡大するため */
+            .search-box { font-size: 16px; }
+            .search-results { right: 0; left: auto; width: min(22rem, calc(100vw - 1.25rem)); }
+            .brand-mark { width: 2.2rem; height: 2.2rem; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-lead { display: none; }
+            #map { margin-bottom: calc(4.35rem + env(safe-area-inset-bottom)); }
+
+            .mobile-bottom-nav {
+                position: fixed;
+                z-index: 1200;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                min-height: calc(4.35rem + env(safe-area-inset-bottom));
+                padding-bottom: env(safe-area-inset-bottom);
+                background: rgba(255, 250, 244, 0.96);
+                border-top: 1px solid rgba(23, 24, 28, 0.14);
+                box-shadow: 0 -8px 28px rgba(23, 24, 28, 0.12);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+
+            .mobile-bottom-nav a {
+                display: grid;
+                place-items: center;
+                align-content: center;
+                gap: 0.22rem;
+                min-height: 4.35rem;
+                color: var(--muted);
+                font-size: 0.7rem;
+                font-weight: 900;
+                text-decoration: none;
+            }
+
+            .mobile-bottom-nav svg { width: 1.28rem; height: 1.28rem; }
+            .mobile-bottom-nav a[aria-current="page"] { color: var(--green); }
+            .mobile-bottom-nav a[aria-current="page"] svg { fill: rgba(63, 122, 79, 0.18); }
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="app-shell">
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <img src="../favicon.svg" alt="">
+                </span>
+                <div class="hero-main">
+                    <span class="hero-kicker">
+                        Mountain TV Guide
+                        <span class="count-badge" id="count-badge"></span>
+                    </span>
+                    <h1 class="hero-title"><span class="accent">山マップ</span>／日本の山を地図で探す</h1>
+                    <p class="hero-lead">百名山から低山まで、全国の山と山小屋を地図で確認できます。拡大するほど小さな山も表示されます。</p>
+                </div>
+            </div>
+            <nav class="primary-nav" aria-label="主要ナビゲーション">
+                <a href="../index.html" class="hero-tv-btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                    テレビ番組
+                </a>
+            </nav>
+        </div>
+        <div class="controls">
+            <input type="search" id="peak-search" class="search-box" placeholder="山名・山小屋で検索" aria-label="山を検索" aria-controls="search-results" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" disabled>
+            <div class="legend-inline" aria-label="凡例">
+                <span><i class="dot dot-hyaku"></i>百名山</span>
+                <span><i class="dot dot-gsi"></i>主な山（国土地理院1003山）</span>
+                <span><i class="dot dot-other"></i>その他の山（地形図の山名）</span>
+                <span><i class="dot dot-hut"></i>山小屋</span>
+            </div>
+            <ul class="search-results" id="search-results" hidden></ul>
+        </div>
+    </div>
+</header>
+
+<div id="map" role="application" aria-label="山の地図"></div>
+<div class="map-status" id="map-status">山のデータを読み込んでいます…</div>
+
+<nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
+    <a href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>
+        <span>番組表</span>
+    </a>
+    <a href="../youtube/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg>
+        <span>YouTube</span>
+    </a>
+    <a href="../weather/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 6.5 19Z"/></svg>
+        <span>天気</span>
+    </a>
+    <a href="../map/index.html" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>
+        <span>山マップ</span>
+    </a>
+</nav>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function () {
+    const DATA_URL = "..\/data\/mountains.json";
+    const WEATHER_URL = "..\/weather\/index.html";
+
+    /*
+     | 1画面に描く山の上限。全国表示で数万件を描くと重いので、
+     | 画面内の山を「百名山 → 1003山 → 標高の高い順」に並べて上位だけ描く。
+     | 拡大して画面内の件数が減れば、低山まで全部表示される。
+     */
+    const MAX_VISIBLE = window.matchMedia('(max-width: 640px)').matches ? 400 : 800;
+    /* これ以上拡大していて、表示件数が少ないときだけ山名ラベルを常時表示する */
+    const LABEL_MIN_ZOOM = 13;
+    const LABEL_MAX_COUNT = 120;
+
+    const STYLE = {
+        hyaku: { radius: 10.5, color: '#fff', weight: 2, fillColor: '#c7901c', fillOpacity: 1 },
+        gsi:   { radius: 8.25, color: '#fff', weight: 2, fillColor: '#c84f4f', fillOpacity: 1 },
+        other: { radius: 6.75, color: '#fff', weight: 1.6, fillColor: '#3f7a4f', fillOpacity: 0.95 },
+    };
+
+    const statusEl = document.getElementById('map-status');
+    const searchEl = document.getElementById('peak-search');
+    const resultsEl = document.getElementById('search-results');
+    const countEl = document.getElementById('count-badge');
+
+    const map = L.map('map', { preferCanvas: true, zoomControl: true, minZoom: 5, maxZoom: 18 })
+        .setView([36.2, 138.2], 6);
+
+    const gsiAttr = '<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">地理院タイル</a>';
+    const baseLayers = {
+        '標準地図': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', { maxZoom: 18, attribution: gsiAttr }),
+        '淡色地図': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', { maxZoom: 18, attribution: gsiAttr }),
+        '写真': L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', { maxZoom: 18, attribution: gsiAttr }),
+    };
+    baseLayers['淡色地図'].addTo(map);
+    const layerControl = L.control.layers(baseLayers, null, { position: 'topright' }).addTo(map);
+
+    map.attributionControl.setPrefix(false);
+    map.attributionControl.addAttribution(
+        '山・山小屋データ: 国土地理院「<a href="https://www.gsi.go.jp/kihonjohochousa/kihonjohochousa41139.html" target="_blank" rel="noopener">日本の山岳標高一覧</a>」' +
+        '「<a href="https://github.com/gsi-cyberjapan/optimal_bvmap" target="_blank" rel="noopener">最適化ベクトルタイル</a>」' +
+        '「<a href="https://maps.gsi.go.jp/development/ichiran.html#dem" target="_blank" rel="noopener">標高タイル</a>」を加工して作成'
+    );
+
+    /* 現在地ボタン。位置の精度に関係なく、現在地を中心にこのズームまで拡大する */
+    const LOCATE_ZOOM = 14;
+    const LocateControl = L.Control.extend({
+        options: { position: 'bottomright' },
+        onAdd: function () {
+            const wrap = L.DomUtil.create('div');
+            const btn = L.DomUtil.create('button', 'locate-btn', wrap);
+            btn.type = 'button';
+            btn.title = '現在地を表示';
+            btn.setAttribute('aria-label', '現在地を表示');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>';
+            L.DomEvent.disableClickPropagation(wrap);
+            L.DomEvent.on(btn, 'click', function () { map.locate({ enableHighAccuracy: true, timeout: 15000 }); });
+            return wrap;
+        },
+    });
+    new LocateControl().addTo(map);
+
+    let locationMarker = null;
+    map.on('locationfound', function (e) {
+        if (locationMarker) map.removeLayer(locationMarker);
+        locationMarker = L.circleMarker(e.latlng, { radius: 7, color: '#fff', weight: 2, fillColor: '#2e6f95', fillOpacity: 1 }).addTo(map);
+        // すでにそれ以上拡大しているときは、ズームはそのままで中心だけ合わせる
+        map.setView(e.latlng, Math.max(map.getZoom(), LOCATE_ZOOM));
+    });
+    map.on('locationerror', function () {
+        alert('現在地を取得できませんでした。');
+    });
+
+    let peaks = [];
+    const layer = L.layerGroup().addTo(map);
+    const markerCache = new Map();
+    let openIndex = null;
+
+    /* 山小屋は数が多くないが、全国表示では邪魔なので拡大したときだけ出す */
+    const HUT_MIN_ZOOM = 11;
+    const HUT_MAX_VISIBLE = 300;
+    let huts = [];
+    const hutLayer = L.layerGroup().addTo(map);
+    const hutMarkerCache = new Map();
+    const hutIcon = L.divIcon({ className: 'hut-icon', iconSize: [11, 11] });
+    layerControl.addOverlay(hutLayer, '山小屋');
+    map.on('overlayadd', renderHuts);
+
+    function kind(p) {
+        return p.weather ? 'hyaku' : (p.gsi ? 'gsi' : 'other');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    function popupHtml(p) {
+        const ele = p.ele !== null
+            ? '<div class="p-ele">' + p.ele.toLocaleString() + ' m</div>'
+            : '<div class="p-ele unknown">標高データなし</div>';
+        const tags = [];
+        if (p.weather) tags.push('<span class="p-tag hyaku">日本百名山</span>');
+        if (p.gsi) tags.push('<span class="p-tag gsi">国土地理院 1003山</span>');
+        const links = [
+            '<a href="https://maps.gsi.go.jp/#15/' + p.lat + '/' + p.lon + '/" target="_blank" rel="noopener">地理院地図</a>',
+            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + p.lat + ',' + p.lon + '" target="_blank" rel="noopener">Googleマップで経路</a>',
+        ];
+        if (p.weather) links.unshift('<a href="' + WEATHER_URL + '#' + encodeURIComponent(p.weather) + '">天気予報</a>');
+
+        return '<div class="peak-popup">' +
+            '<div class="p-name">' + escapeHtml(p.name) + '</div>' +
+            (p.kana ? '<div class="p-kana">' + escapeHtml(p.kana) + '</div>' : '') +
+            ele +
+            (tags.length ? '<div class="p-tags">' + tags.join('') + '</div>' : '') +
+            '<div class="p-links">' + links.join('') + '</div>' +
+            '<div class="p-src">' + (p.gsi
+                ? '出典: 国土地理院「日本の山岳標高一覧」'
+                : '出典: 国土地理院 地形図の山名（山頂の位置・標高は近くの三角点・標高点などから推定）') + '</div>' +
+            '</div>';
+    }
+
+    function hutPopupHtml(h) {
+        return '<div class="peak-popup">' +
+            '<div class="p-name">' + escapeHtml(h.name) + '</div>' +
+            '<div class="p-tags"><span class="p-tag hut">山小屋</span></div>' +
+            '<div class="p-links">' +
+            '<a href="https://maps.gsi.go.jp/#16/' + h.lat + '/' + h.lon + '/" target="_blank" rel="noopener">地理院地図</a>' +
+            '<a href="https://www.google.com/maps/dir/?api=1&destination=' + h.lat + ',' + h.lon + '" target="_blank" rel="noopener">Googleマップで経路</a>' +
+            '</div>' +
+            '<div class="p-src">出典: 国土地理院 地形図の注記。営業状況は各山小屋に確認してください</div>' +
+            '</div>';
+    }
+
+    function markerFor(i) {
+        let m = markerCache.get(i);
+        if (!m) {
+            const p = peaks[i];
+            m = L.circleMarker([p.lat, p.lon], STYLE[kind(p)]);
+            m.bindPopup(function () { return popupHtml(p); }, { maxWidth: 280 });
+            m.on('popupopen', function () { openIndex = i; });
+            m.on('popupclose', function () { if (openIndex === i) openIndex = null; });
+            markerCache.set(i, m);
+        }
+        return m;
+    }
+
+    function render() {
+        if (!peaks.length) return;
+        const bounds = map.getBounds().pad(0.1);
+        const zoom = map.getZoom();
+        const visible = [];
+        let inView = 0;
+
+        /* peaks は優先度順に並べてあるので、先頭から上限まで拾えばよい */
+        for (let i = 0; i < peaks.length; i++) {
+            const p = peaks[i];
+            if (!bounds.contains([p.lat, p.lon])) continue;
+            inView++;
+            if (visible.length < MAX_VISIBLE) visible.push(i);
+        }
+        /* 開いているポップアップの山は、範囲外でも消さない */
+        if (openIndex !== null && visible.indexOf(openIndex) === -1) visible.push(openIndex);
+
+        const showLabels = zoom >= LABEL_MIN_ZOOM && visible.length <= LABEL_MAX_COUNT;
+
+        layer.clearLayers();
+        /* 優先度の低いものから描き、重要な山を上に重ねる */
+        for (let k = visible.length - 1; k >= 0; k--) {
+            const m = markerFor(visible[k]);
+            if (showLabels) {
+                if (!m.getTooltip()) {
+                    m.bindTooltip(peaks[visible[k]].name, { permanent: true, direction: 'right', offset: [6, 0], className: 'peak-label' });
+                }
+            } else if (m.getTooltip()) {
+                m.unbindTooltip();
+            }
+            layer.addLayer(m);
+        }
+
+        countEl.textContent = inView > visible.length
+            ? '画面内 ' + inView.toLocaleString() + '山中 ' + visible.length.toLocaleString() + '山を表示'
+            : '画面内 ' + inView.toLocaleString() + '山';
+
+        renderHuts();
+    }
+
+    function hutMarkerFor(i) {
+        let m = hutMarkerCache.get(i);
+        if (!m) {
+            const h = huts[i];
+            m = L.marker([h.lat, h.lon], { icon: hutIcon, title: h.name, zIndexOffset: -100 });
+            m.bindPopup(function () { return hutPopupHtml(h); }, { maxWidth: 280 });
+            hutMarkerCache.set(i, m);
+        }
+        return m;
+    }
+
+    function renderHuts() {
+        if (!map.hasLayer(hutLayer)) return;
+        hutLayer.clearLayers();
+        if (map.getZoom() < HUT_MIN_ZOOM) return;
+
+        const bounds = map.getBounds().pad(0.1);
+        let shown = 0;
+        for (let i = 0; i < huts.length && shown < HUT_MAX_VISIBLE; i++) {
+            if (!bounds.contains([huts[i].lat, huts[i].lon])) continue;
+            hutLayer.addLayer(hutMarkerFor(i));
+            shown++;
+        }
+    }
+
+    function focusPeak(i) {
+        const p = peaks[i];
+        map.setView([p.lat, p.lon], Math.max(map.getZoom(), 14));
+        openIndex = i;
+        render();
+        markerFor(i).openPopup();
+    }
+
+    function focusHut(i) {
+        const h = huts[i];
+        map.setView([h.lat, h.lon], Math.max(map.getZoom(), 15));
+        if (!map.hasLayer(hutLayer)) hutLayer.addTo(map);
+        render();
+        hutMarkerFor(i).openPopup();
+    }
+
+    /* 検索: 山名・よみの部分一致。表記ゆれ（ヶ/ケ など）は吸収する */
+    function norm(s) {
+        return (s || '').replace(/[ケヵ]/g, 'ヶ').replace(/\s/g, '').toLowerCase();
+    }
+
+    let searchIndex = [];
+    let hutSearchIndex = [];
+    let searchTimer = null;
+
+    function runSearch() {
+        const q = norm(searchEl.value);
+        resultsEl.innerHTML = '';
+        if (!q) { resultsEl.hidden = true; return; }
+
+        /* 山を先に、続けて山小屋を出す */
+        const hits = [];
+        for (let i = 0; i < searchIndex.length && hits.length < 50; i++) {
+            if (searchIndex[i].indexOf(q) !== -1) hits.push({ hut: false, i: i });
+        }
+        for (let i = 0; i < hutSearchIndex.length && hits.length < 50; i++) {
+            if (hutSearchIndex[i].indexOf(q) !== -1) hits.push({ hut: true, i: i });
+        }
+
+        if (!hits.length) {
+            resultsEl.innerHTML = '<li class="r-empty">見つかりませんでした</li>';
+        } else {
+            for (const hit of hits) {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                if (hit.hut) {
+                    btn.innerHTML = '<span class="r-name">' + escapeHtml(huts[hit.i].name) + '</span><span class="r-meta">山小屋</span>';
+                } else {
+                    const p = peaks[hit.i];
+                    btn.innerHTML = '<span class="r-name">' + escapeHtml(p.name) + '</span>' +
+                        '<span class="r-meta">' + (p.ele !== null ? p.ele.toLocaleString() + 'm' : '') + (p.kana ? ' ' + escapeHtml(p.kana) : '') + '</span>';
+                }
+                btn.addEventListener('click', function () {
+                    resultsEl.hidden = true;
+                    searchEl.blur();
+                    if (hit.hut) {
+                        focusHut(hit.i);
+                    } else {
+                        focusPeak(hit.i);
+                    }
+                });
+                li.appendChild(btn);
+                resultsEl.appendChild(li);
+            }
+        }
+        resultsEl.hidden = false;
+    }
+
+    searchEl.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(runSearch, 150);
+    });
+    searchEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { searchEl.value = ''; resultsEl.hidden = true; }
+        if (e.key === 'Enter') {
+            const first = resultsEl.querySelector('button');
+            if (first) first.click();
+        }
+    });
+    document.addEventListener('click', function (e) {
+        if (!resultsEl.contains(e.target) && e.target !== searchEl) resultsEl.hidden = true;
+    });
+
+    map.on('moveend', render);
+
+    fetch(DATA_URL)
+        .then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(function (data) {
+            const f = data.fields;
+            const idx = {};
+            f.forEach(function (name, n) { idx[name] = n; });
+
+            peaks = data.mountains.map(function (r) {
+                return {
+                    name: r[idx.name],
+                    kana: r[idx.kana],
+                    ele: r[idx.ele],
+                    lat: r[idx.lat],
+                    lon: r[idx.lon],
+                    gsi: r[idx.gsi] === 1,
+                    weather: r[idx.weather],
+                };
+            });
+
+            /* 優先度: 百名山 → 1003山 → 標高の高い順（標高不明は最後） */
+            const rank = { hyaku: 0, gsi: 1, other: 2 };
+            peaks.sort(function (a, b) {
+                return (rank[kind(a)] - rank[kind(b)]) || ((b.ele ?? -1) - (a.ele ?? -1));
+            });
+
+            searchIndex = peaks.map(function (p) { return norm(p.name) + '|' + norm(p.kana); });
+
+            const hf = data.hut_fields || [];
+            const hIdx = {};
+            hf.forEach(function (name, n) { hIdx[name] = n; });
+            huts = (data.huts || []).map(function (r) {
+                return { name: r[hIdx.name], lat: r[hIdx.lat], lon: r[hIdx.lon] };
+            });
+            hutSearchIndex = huts.map(function (h) { return norm(h.name); });
+            searchEl.disabled = false;
+            statusEl.hidden = true;
+            render();
+        })
+        .catch(function (err) {
+            statusEl.textContent = '山のデータを読み込めませんでした（' + err.message + '）';
+        });
+})();
+</script>
+
+<style>
+    .pwa-refresh {
+        position: fixed;
+        z-index: 210;
+        right: 0.9rem;
+        bottom: calc(5.2rem + env(safe-area-inset-bottom));
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 2.9rem;
+        height: 2.9rem;
+        padding: 0;
+        border: 1px solid rgba(23, 24, 28, 0.12);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.96);
+        color: #2e6f95;
+        box-shadow: 0 6px 20px rgba(23, 24, 28, 0.18);
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+
+    .pwa-refresh.is-visible { display: inline-flex; }
+    .pwa-refresh svg { width: 1.32rem; height: 1.32rem; }
+    .pwa-refresh:active { transform: scale(0.94); }
+
+    .pwa-refresh.is-loading svg { animation: pwa-spin 0.8s linear infinite; }
+
+    @keyframes pwa-spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<button type="button" class="pwa-refresh" id="pwa-refresh" aria-label="最新の情報に更新">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+        <path d="M21 3v6h-6"/>
+    </svg>
+</button>
+
+<script>
+(function () {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('https://hilack-door.github.io/outdoor-tv/sw.js').then(function (registration) {
+                // 起動のたびに新しい Service Worker が無いか確認する
+                registration.update();
+
+                // 新しい版が待機状態になったら、すぐ有効化させる
+                registration.addEventListener('updatefound', function () {
+                    var installing = registration.installing;
+                    if (!installing) return;
+
+                    installing.addEventListener('statechange', function () {
+                        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                            installing.postMessage('skip-waiting');
+                        }
+                    });
+                });
+            }).catch(function () {});
+        });
+    }
+
+    // ホーム画面から起動したときだけ、更新用の仕組みを有効にする
+    var isStandalone = window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+
+    if (!isStandalone) {
+        return;
+    }
+
+    var button = document.getElementById('pwa-refresh');
+    if (button) {
+        button.classList.add('is-visible');
+        button.addEventListener('click', function () {
+            button.classList.add('is-loading');
+            location.reload();
+        });
+    }
+
+    // 一定時間が経ってから復帰したときは、自動で読み込み直す
+    var STALE_MS = 20 * 60 * 1000;
+    var loadedAt = Date.now();
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState !== 'visible') {
+            return;
+        }
+        if (Date.now() - loadedAt < STALE_MS) {
+            return;
+        }
+        location.reload();
+    });
+})();
+</script>
+</body>
+</html>

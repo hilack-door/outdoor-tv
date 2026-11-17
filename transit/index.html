@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>乗換ショートカット｜登山口までの経路をすぐ検索 | Mountain TV Guide</title>
+    <meta name="description" content="よく使う乗る駅・降りる駅を登録しておき、ボタンひとつでYahoo!乗換案内やNAVITIMEの経路検索を開けます。">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://hilack-door.github.io/outdoor-tv/transit/">    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mountain TV Guide">
+    <meta property="og:title" content="乗換ショートカット｜登山口までの経路をすぐ検索 | Mountain TV Guide">
+    <meta property="og:description" content="よく使う乗る駅・降りる駅を登録しておき、ボタンひとつでYahoo!乗換案内やNAVITIMEの経路検索を開けます。">
+    <meta property="og:url" content="https://hilack-door.github.io/outdoor-tv/transit/">    <meta property="og:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="乗換ショートカット｜登山口までの経路をすぐ検索 | Mountain TV Guide">
+    <meta name="twitter:description" content="よく使う乗る駅・降りる駅を登録しておき、ボタンひとつでYahoo!乗換案内やNAVITIMEの経路検索を開けます。">
+    <meta name="twitter:image" content="https://hilack-door.github.io/outdoor-tv/ogp.png">
+        <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" href="../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="manifest" href="https://hilack-door.github.io/outdoor-tv/manifest.json">
+    <meta name="theme-color" content="#0d1527">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="俺の山道具">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PC70BVCMKE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PC70BVCMKE');
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #17181c;
+            --muted: #69707c;
+            --line: #dfe3ea;
+            --accent: #6a4fb3;
+            --accent-soft: rgba(106, 79, 179, 0.12);
+            --yahoo: #ff0033;
+            --navitime: #0a6ebd;
+            --danger: #c84f4f;
+            --shadow: 0 10px 30px rgba(23, 24, 28, 0.08);
+        }
+
+        body {
+            font-family: 'BIZ UDPGothic', 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            color: var(--ink);
+            background: #f2f0f7;
+            min-height: 100vh;
+        }
+
+        a { color: inherit; }
+
+        .app-shell {
+            width: min(860px, calc(100% - 2rem));
+            margin: 0 auto;
+        }
+
+        header.hero {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(250, 249, 253, 0.94);
+            border-bottom: 1px solid rgba(23, 24, 28, 0.1);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .topbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.82rem 0;
+        }
+
+        .brand { display: flex; align-items: center; gap: 0.72rem; min-width: 0; }
+        .brand-mark { width: 2.45rem; height: 2.45rem; flex-shrink: 0; box-shadow: 0 10px 26px rgba(106, 79, 179, 0.22); }
+        .brand-mark img { display: block; width: 100%; height: 100%; }
+        .hero-main { min-width: 0; }
+        .hero-kicker { display: block; color: var(--muted); font-size: 0.66rem; font-weight: 900; letter-spacing: 0.12em; }
+        .hero-title { font-size: 1.12rem; font-weight: 900; line-height: 1.3; }
+        .hero-title .accent { color: var(--accent); }
+        .hero-lead { margin-top: 0.2rem; color: var(--muted); font-size: 0.76rem; line-height: 1.6; }
+
+        .primary-nav { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+        .hero-tv-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.34rem;
+            padding: 0.44rem 0.72rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ink);
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .hero-tv-btn svg { width: 1rem; height: 1rem; }
+        .hero-tv-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.55rem;
+            padding-bottom: 0.82rem;
+            color: var(--muted);
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .controls strong { color: var(--accent); font-size: 0.9rem; }
+
+        main { padding: 1.2rem 0 3rem; }
+
+        .panel {
+            padding: 1rem 1.1rem;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .panel + .panel, .panel + .section-title, .section-title + .route-list { margin-top: 1rem; }
+
+        .panel-title, .section-title {
+            font-size: 0.9rem;
+            font-weight: 900;
+        }
+
+        .section-title { margin-top: 1.4rem; }
+
+        .add-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            gap: 0.5rem 0.6rem;
+            align-items: end;
+            margin-top: 0.7rem;
+        }
+
+        .field { display: grid; gap: 0.25rem; min-width: 0; }
+        .field label { color: var(--muted); font-size: 0.7rem; font-weight: 800; }
+        .field-wide { grid-column: 1 / -1; }
+
+        .text-input {
+            width: 100%;
+            min-height: 2.3rem;
+            padding: 0.4rem 0.75rem;
+            border: 1px solid var(--line);
+            border-radius: 0.6rem;
+            background: #fff;
+            color: var(--ink);
+            font: inherit;
+            font-size: 0.9rem;
+        }
+
+        .text-input:focus { outline: 2px solid rgba(106, 79, 179, 0.3); border-color: var(--accent); }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.3rem;
+            height: 2.3rem;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: #fff;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .icon-btn svg { width: 1.05rem; height: 1.05rem; }
+
+        .form-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.7rem; }
+        .form-error { color: var(--danger); font-size: 0.76rem; font-weight: 700; }
+
+        .primary-btn {
+            padding: 0.55rem 1.2rem;
+            border: 0;
+            border-radius: 999px;
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-size: 0.84rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover { filter: brightness(1.08); }
+
+        .time-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-row .text-input { flex: 1 1 12rem; width: auto; min-width: 0; }
+        .note { color: var(--muted); font-size: 0.7rem; line-height: 1.6; }
+
+        .link-btn {
+            padding: 0.3rem 0.7rem;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: #fff;
+            color: var(--muted);
+            font: inherit;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .link-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        .route-list { list-style: none; display: grid; gap: 0.7rem; }
+
+        .route-card {
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--line);
+            border-radius: 1rem;
+            background: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .route-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.6rem;
+        }
+
+        .route-label { font-size: 0.72rem; font-weight: 800; color: var(--accent); }
+
+        .route-stations {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.2rem 0.45rem;
+            font-size: 1.02rem;
+            font-weight: 900;
+            line-height: 1.4;
+        }
+
+        .route-stations .arrow { color: var(--muted); font-weight: 700; }
+
+        .route-tools { display: flex; gap: 0.3rem; flex-shrink: 0; }
+        .route-tools .icon-btn { width: 2rem; height: 2rem; }
+        .route-tools .icon-btn svg { width: 0.95rem; height: 0.95rem; }
+        .route-tools .icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+        .route-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.45rem;
+            margin-top: 0.7rem;
+        }
+
+        .route-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            min-height: 2.5rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 0.65rem;
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .route-links a.yahoo { background: var(--yahoo); }
+        .route-links a.navitime { background: var(--navitime); }
+        .route-links a:hover { filter: brightness(1.08); }
+        .route-links svg { width: 0.9rem; height: 0.9rem; flex-shrink: 0; }
+
+        .empty {
+            padding: 1.4rem 1rem;
+            border: 1px dashed #c9c3dc;
+            border-radius: 1rem;
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .storage-warn {
+            margin-top: 1rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 0.7rem;
+            background: rgba(200, 79, 79, 0.1);
+            color: var(--danger);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .storage-warn[hidden] { display: none; }
+
+        .retention-warn {
+            margin-top: 0.35rem;
+            color: var(--danger);
+            font-size: 0.74rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .route-depart {
+            display: inline-block;
+            margin-top: 0.3rem;
+            padding: 0.08rem 0.5rem;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .route-depart.is-now { background: #f0f1f4; color: var(--muted); }
+
+        .mobile-bottom-nav { display: none; }
+
+        @media (max-width: 680px) {
+            .app-shell { width: min(100% - 1.25rem, 860px); }
+            header.hero .app-shell {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: center;
+                column-gap: 0.65rem;
+            }
+            .topbar { display: contents; }
+            .brand { grid-column: 1 / -1; padding: 0.82rem 0 0.55rem; align-items: flex-start; }
+            .primary-nav { grid-column: 1; grid-row: 2; justify-self: start; padding-bottom: 0.85rem; }
+            .controls { grid-column: 2; grid-row: 2; padding-bottom: 0.85rem; }
+            .brand-mark { width: 2.2rem; height: 2.2rem; }
+            /* iOS Safari は16px未満の入力欄にフォーカスすると画面を拡大するため */
+            .text-input { font-size: 16px; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-lead { display: none; }
+            /* スマホでは画面下のナビで全ページに移動できるため、上部メニューは出さない */
+            .primary-nav { display: none; }
+            main { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+
+            .add-form { column-gap: 0.4rem; }
+            .add-form .swap-btn { width: 2rem; height: 2rem; margin-bottom: 0.15rem; }
+
+            .mobile-bottom-nav {
+                position: fixed;
+                z-index: 1200;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                min-height: calc(4.35rem + env(safe-area-inset-bottom));
+                padding-bottom: env(safe-area-inset-bottom);
+                background: rgba(255, 250, 244, 0.96);
+                border-top: 1px solid rgba(23, 24, 28, 0.14);
+                box-shadow: 0 -8px 28px rgba(23, 24, 28, 0.12);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+            }
+
+            .mobile-bottom-nav a {
+                display: grid;
+                place-items: center;
+                align-content: center;
+                gap: 0.22rem;
+                min-height: 4.35rem;
+                color: var(--muted);
+                font-size: 0.7rem;
+                font-weight: 900;
+                text-decoration: none;
+            }
+
+            .mobile-bottom-nav svg { width: 1.28rem; height: 1.28rem; }
+            .mobile-bottom-nav a[aria-current="page"] { color: var(--accent); }
+            .mobile-bottom-nav a[aria-current="page"] svg { fill: var(--accent-soft); }
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="app-shell">
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-mark" aria-hidden="true">
+                    <img src="../favicon.svg" alt="">
+                </span>
+                <div class="hero-main">
+                    <span class="hero-kicker">Mountain TV Guide</span>
+                    <h1 class="hero-title"><span class="accent">乗換ショートカット</span>／登山口までの経路をすぐ検索</h1>
+                    <p class="hero-lead">乗る駅と降りる駅をあらかじめ登録しておくと、乗換案内サイトをすぐに開けます。</p>
+                </div>
+            </div>
+            <nav class="primary-nav" aria-label="主要ナビゲーション">
+                    <a href="../" class="hero-tv-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            テレビ番組
+        </a>
+                    <a href="../youtube/" class="hero-tv-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            YouTube
+        </a>
+                    <a href="../weather/" class="hero-tv-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 6.5 19Z"/></svg>
+            山の天気
+        </a>
+                            <a href="../map/" class="hero-tv-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>
+            山マップ
+        </a>
+    </nav>
+        </div>
+        <div class="controls">
+            <span>登録 <strong id="route-count">0</strong> 件</span>
+        </div>
+    </div>
+</header>
+
+<main class="app-shell">
+    <section class="panel" aria-labelledby="add-title">
+        <h2 class="panel-title" id="add-title">駅を登録する</h2>
+        <p class="retention-warn">※ 7日ほどこのページにアクセスしないと、登録した経路が消えることがあります（特に iPhone・Mac の Safari）。</p>
+        <form class="add-form" id="add-form" autocomplete="off" novalidate>
+            <div class="field">
+                <label for="from-input">乗る駅</label>
+                <input type="text" id="from-input" class="text-input" placeholder="例：新宿" maxlength="40" enterkeyhint="next">
+            </div>
+            <button type="button" class="icon-btn swap-btn" id="swap-input" aria-label="乗る駅と降りる駅を入れ替え" title="入れ替え">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h13l-4-4M17 17H4l4 4"/></svg>
+            </button>
+            <div class="field">
+                <label for="to-input">降りる駅</label>
+                <input type="text" id="to-input" class="text-input" placeholder="例：高尾山口" maxlength="40" enterkeyhint="next">
+            </div>
+            <div class="field field-wide">
+                <label for="depart-at">出発日時（任意）</label>
+                <div class="time-row">
+                    <input type="datetime-local" id="depart-at" class="text-input">
+                    <button type="button" class="link-btn" id="depart-clear">クリア</button>
+                </div>
+                <p class="note">空欄なら、検索するときの現在時刻で調べます。日時は Yahoo!乗換案内 のリンクにだけ反映されます。</p>
+            </div>
+            <div class="field field-wide">
+                <label for="label-input">メモ（任意）</label>
+                <input type="text" id="label-input" class="text-input" placeholder="例：高尾山・行き" maxlength="40" enterkeyhint="done">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="primary-btn">登録する</button>
+                <span class="form-error" id="form-error" role="alert"></span>
+            </div>
+        </form>
+        <p class="storage-warn" id="storage-warn" hidden>このブラウザでは保存できないため、ページを閉じると登録が消えます（プライベートブラウズ等）。</p>
+    </section>
+
+    <h2 class="section-title">登録した経路</h2>
+    <ul class="route-list" id="route-list" aria-live="polite"></ul>
+    <p class="empty" id="route-empty" hidden>まだ登録がありません。<br>上のフォームで乗る駅と降りる駅を登録してください。</p>
+
+    <p class="note" style="margin-top: 1.4rem;">登録した駅はこの端末のブラウザ内にだけ保存され、サーバーには送信されません。駅名は各サイトの検索欄にそのまま渡すので、同名の駅がある場合は遷移先で候補を選んでください。</p>
+</main>
+
+<nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
+    <a href="../">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="m8 3 4 4 4-4"/></svg>
+        <span>番組表</span>
+    </a>
+    <a href="../youtube/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/></svg>
+        <span>YouTube</span>
+    </a>
+    <a href="../weather/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 6.5 19Z"/></svg>
+        <span>天気</span>
+    </a>
+    <a href="../transit/" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-4M15 21l2-4"/><circle cx="9" cy="14" r=".6"/><circle cx="15" cy="14" r=".6"/></svg>
+        <span>乗換</span>
+    </a>
+    <a href="../map/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>
+        <span>山マップ</span>
+    </a>
+</nav>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'mtg.transit.routes.v1';
+    const MAX_ROUTES = 50;
+
+    const form      = document.getElementById('add-form');
+    const fromInput = document.getElementById('from-input');
+    const toInput   = document.getElementById('to-input');
+    const labelInput = document.getElementById('label-input');
+    const formError = document.getElementById('form-error');
+    const list      = document.getElementById('route-list');
+    const empty     = document.getElementById('route-empty');
+    const countEl   = document.getElementById('route-count');
+    const departAt  = document.getElementById('depart-at');
+
+    /* localStorage が使えない環境（プライベートブラウズ等）ではメモリ上だけで動かす */
+    let storageOk = true;
+    let routes = [];
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        routes = Array.isArray(parsed)
+            ? parsed.filter(r => r && typeof r.from === 'string' && typeof r.to === 'string')
+            : [];
+    } catch (e) {
+        storageOk = false;
+    }
+
+    function save() {
+        if (!storageOk) return;
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(routes));
+        } catch (e) {
+            storageOk = false;
+            document.getElementById('storage-warn').hidden = false;
+        }
+    }
+
+    if (!storageOk) document.getElementById('storage-warn').hidden = false;
+
+    /** 入力の前後空白と末尾の「駅」を落とす（乗換サイトは「駅」なしの駅名で引く） */
+    function normalizeStation(s) {
+        return s.replace(/\s+/g, ' ').trim().replace(/駅$/, '');
+    }
+
+    /* ---- 乗換サイトの URL ---- */
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    /** Yahoo!乗換案内: from/to と、日時指定時は y,m,d,hh,m1,m2（分の十の位・一の位）＋ type=1（出発） */
+    function yahooUrl(from, to, date) {
+        const p = new URLSearchParams({ from: from, to: to });
+        if (date) {
+            const mm = pad(date.getMinutes());
+            p.set('y', String(date.getFullYear()));
+            p.set('m', pad(date.getMonth() + 1));
+            p.set('d', pad(date.getDate()));
+            p.set('hh', pad(date.getHours()));
+            p.set('m1', mm[0]);
+            p.set('m2', mm[1]);
+            p.set('type', '1');
+        }
+        return 'https://transit.yahoo.co.jp/search/result?' + p.toString();
+    }
+
+    /** NAVITIME: 乗換検索フォーム（/transfer/searchlist）の出発・到着駅名フィールドに渡す */
+    function navitimeUrl(from, to) {
+        const p = new URLSearchParams({ orvStationName: from, dnvStationName: to });
+        return 'https://www.navitime.co.jp/transfer/searchlist?' + p.toString();
+    }
+
+    /** 登録した出発日時（datetime-local の 'YYYY-MM-DDTHH:MM'、端末のローカル時刻）を Date にする。空・不正なら null */
+    function parseDepart(value) {
+        if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return null;
+        const d = new Date(value);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
+    function formatDepart(d) {
+        return (d.getMonth() + 1) + '/' + d.getDate() + '(' + WEEKDAYS[d.getDay()] + ') '
+            + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' 発';
+    }
+
+    /* ---- 描画 ---- */
+
+    const ICON_EXT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+    const ICON_SWAP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h13l-4-4M17 17H4l4 4"/></svg>';
+    const ICON_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';
+    const ICON_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
+
+    function el(tag, cls, text) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text != null) e.textContent = text;
+        return e;
+    }
+
+    function toolButton(icon, label, onClick, extraCls) {
+        const b = el('button', 'icon-btn' + (extraCls ? ' ' + extraCls : ''));
+        b.type = 'button';
+        b.innerHTML = icon;
+        b.setAttribute('aria-label', label);
+        b.title = label;
+        b.addEventListener('click', onClick);
+        return b;
+    }
+
+    function linkButton(cls, href, text) {
+        const a = el('a', cls);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = text;
+        a.insertAdjacentHTML('beforeend', ICON_EXT);
+        return a;
+    }
+
+    function render() {
+        list.textContent = '';
+        countEl.textContent = String(routes.length);
+        empty.hidden = routes.length > 0;
+
+        routes.forEach((r, i) => {
+            const li = el('li', 'route-card');
+
+            const head = el('div', 'route-head');
+            const info = el('div');
+            if (r.label) info.appendChild(el('div', 'route-label', r.label));
+            const st = el('div', 'route-stations');
+            st.appendChild(el('span', null, r.from));
+            st.appendChild(el('span', 'arrow', '→'));
+            st.appendChild(el('span', null, r.to));
+            info.appendChild(st);
+            const date = parseDepart(r.departAt);
+            info.appendChild(date
+                ? el('span', 'route-depart', formatDepart(date))
+                : el('span', 'route-depart is-now', '現在時刻で検索'));
+            head.appendChild(info);
+
+            const tools = el('div', 'route-tools');
+            tools.appendChild(toolButton(ICON_SWAP, '逆方向にする', () => {
+                routes[i] = Object.assign({}, r, { from: r.to, to: r.from });
+                save(); render();
+            }));
+            if (i > 0) {
+                tools.appendChild(toolButton(ICON_UP, '上へ移動', () => {
+                    [routes[i - 1], routes[i]] = [routes[i], routes[i - 1]];
+                    save(); render();
+                }));
+            }
+            tools.appendChild(toolButton(ICON_DEL, '削除', () => {
+                if (!confirm('「' + r.from + ' → ' + r.to + '」を削除しますか？')) return;
+                routes.splice(i, 1);
+                save(); render();
+            }, 'danger'));
+            head.appendChild(tools);
+            li.appendChild(head);
+
+            const links = el('div', 'route-links');
+            links.appendChild(linkButton('yahoo', yahooUrl(r.from, r.to, date), 'Yahoo!乗換案内'));
+            links.appendChild(linkButton('navitime', navitimeUrl(r.from, r.to), 'NAVITIME'));
+            li.appendChild(links);
+
+            list.appendChild(li);
+        });
+    }
+
+    /* ---- 入力 ---- */
+
+    document.getElementById('swap-input').addEventListener('click', () => {
+        const t = fromInput.value;
+        fromInput.value = toInput.value;
+        toInput.value = t;
+    });
+
+    form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const from = normalizeStation(fromInput.value);
+        const to = normalizeStation(toInput.value);
+        const label = labelInput.value.trim();
+
+        if (!from || !to) {
+            formError.textContent = '乗る駅と降りる駅を入力してください';
+            (from ? toInput : fromInput).focus();
+            return;
+        }
+        if (from === to) {
+            formError.textContent = '乗る駅と降りる駅が同じです';
+            return;
+        }
+        if (routes.length >= MAX_ROUTES) {
+            formError.textContent = '登録できるのは' + MAX_ROUTES + '件までです';
+            return;
+        }
+
+        formError.textContent = '';
+        routes.push({ from: from, to: to, label: label, departAt: parseDepart(departAt.value) ? departAt.value : '' });
+        save();
+        render();
+        form.reset();
+        fromInput.focus();
+    });
+
+    document.getElementById('depart-clear').addEventListener('click', () => {
+        departAt.value = '';
+    });
+
+    render();
+})();
+</script>
+<style>
+    .pwa-refresh {
+        position: fixed;
+        z-index: 210;
+        right: 0.9rem;
+        bottom: calc(5.2rem + env(safe-area-inset-bottom));
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 2.9rem;
+        height: 2.9rem;
+        padding: 0;
+        border: 1px solid rgba(23, 24, 28, 0.12);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.96);
+        color: #2e6f95;
+        box-shadow: 0 6px 20px rgba(23, 24, 28, 0.18);
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+
+    .pwa-refresh.is-visible { display: inline-flex; }
+    .pwa-refresh svg { width: 1.32rem; height: 1.32rem; }
+    .pwa-refresh:active { transform: scale(0.94); }
+
+    .pwa-refresh.is-loading svg { animation: pwa-spin 0.8s linear infinite; }
+
+    @keyframes pwa-spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<button type="button" class="pwa-refresh" id="pwa-refresh" aria-label="最新の情報に更新">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+        <path d="M21 3v6h-6"/>
+    </svg>
+</button>
+
+<script>
+(function () {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('https://hilack-door.github.io/outdoor-tv/sw.js').then(function (registration) {
+                // 起動のたびに新しい Service Worker が無いか確認する
+                registration.update();
+
+                // 新しい版が待機状態になったら、すぐ有効化させる
+                registration.addEventListener('updatefound', function () {
+                    var installing = registration.installing;
+                    if (!installing) return;
+
+                    installing.addEventListener('statechange', function () {
+                        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+                            installing.postMessage('skip-waiting');
+                        }
+                    });
+                });
+            }).catch(function () {});
+        });
+    }
+
+    // ホーム画面から起動したときだけ、更新用の仕組みを有効にする
+    var isStandalone = window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+
+    if (!isStandalone) {
+        return;
+    }
+
+    var button = document.getElementById('pwa-refresh');
+    if (button) {
+        button.classList.add('is-visible');
+        button.addEventListener('click', function () {
+            button.classList.add('is-loading');
+            location.reload();
+        });
+    }
+
+    // 一定時間が経ってから復帰したときは、自動で読み込み直す
+    var STALE_MS = 20 * 60 * 1000;
+    var loadedAt = Date.now();
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState !== 'visible') {
+            return;
+        }
+        if (Date.now() - loadedAt < STALE_MS) {
+            return;
+        }
+        location.reload();
+    });
+})();
+</script>
+</body>
+</html>
